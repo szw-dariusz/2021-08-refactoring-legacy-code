@@ -117,4 +117,8 @@ public class Team {
                 .append(description)
                 .toHashCode();
     }
+
+    public boolean hasCodename() {
+        return codename != null;
+    }
 }
