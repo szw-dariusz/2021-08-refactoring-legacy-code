@@ -8,6 +8,8 @@ import com.smalaca.taskamanager.model.embedded.Codename;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import static java.util.stream.Collectors.toList;
+
 @Entity
 public class Team {
     @Id
@@ -43,6 +45,7 @@ public class Team {
         this.members = new ArrayList<>(members);
     }
 
+    @Deprecated
     public List<User> getMembers() {
         return members;
     }
@@ -93,6 +96,10 @@ public class Team {
 
     public String getShortNameOfCodeName() {
         return codename.getShortName();
+    }
+
+    public List<Long> getMembersIds() {
+        return members.stream().map(User::getId).collect(toList());
     }
 
     @Override
