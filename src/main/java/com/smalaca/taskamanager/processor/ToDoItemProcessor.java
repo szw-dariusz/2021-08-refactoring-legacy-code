@@ -2,9 +2,7 @@ package com.smalaca.taskamanager.processor;
 
 import com.google.common.collect.ImmutableMap;
 import com.smalaca.taskamanager.events.EpicReadyToPrioritize;
-import com.smalaca.taskamanager.events.StoryApprovedEvent;
 import com.smalaca.taskamanager.events.StoryDoneEvent;
-import com.smalaca.taskamanager.events.TaskApprovedEvent;
 import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Story;
@@ -18,7 +16,6 @@ import com.smalaca.taskamanager.service.SprintBacklogService;
 import com.smalaca.taskamanager.service.StoryService;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.*;
@@ -41,6 +38,7 @@ public class ToDoItemProcessor {
         this.communicationService = communicationService;
         this.sprintBacklogService = sprintBacklogService;
         states = ImmutableMap.of(
+                APPROVED, new ApprovedToDoItem(eventsRegistry, storyService),
                 RELEASED, new ReleasedToDoItem(eventsRegistry),
                 TO_BE_DEFINED, new ToBeDefinedToDoItem()
         );
@@ -59,10 +57,6 @@ public class ToDoItemProcessor {
 
             case DONE:
                 processDone(toDoItem);
-                break;
-
-            case APPROVED:
-                processApproved(toDoItem);
                 break;
 
             default:
@@ -121,25 +115,6 @@ public class ToDoItemProcessor {
             StoryDoneEvent event = new StoryDoneEvent();
             event.setStoryId(story.getId());
             eventsRegistry.publish(event);
-        }
-    }
-
-    private void processApproved(ToDoItem toDoItem) {
-        if (toDoItem instanceof Story) {
-            Story story = (Story) toDoItem;
-            StoryApprovedEvent event = new StoryApprovedEvent();
-            event.setStoryId(story.getId());
-            eventsRegistry.publish(event);
-        } else if (toDoItem instanceof Task) {
-            Task task = (Task) toDoItem;
-
-            if (task.isSubtask()) {
-                TaskApprovedEvent event = new TaskApprovedEvent();
-                event.setTaskId(task.getId());
-                eventsRegistry.publish(event);
-            } else {
-                storyService.attachPartialApprovalFor(task.getStory().getId(), task.getId());
-            }
         }
     }
 }
