@@ -66,7 +66,7 @@ class ToDoItemProcessorTest {
         Story story = story(DEFINED);
         given(story.getTasks()).willReturn(emptyList());
         given(story.getProject()).willReturn(project);
-        given(story.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
@@ -84,7 +84,7 @@ class ToDoItemProcessorTest {
         Story story = story(DEFINED);
         List<Task> tasks = asList(mock(Task.class), mock(Task.class));
         given(story.getTasks()).willReturn(tasks);
-        given(story.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(story).accept(any());
         given(story.isAssigned()).willReturn(false);
         given(story.getProject()).willReturn(project);
 
@@ -105,7 +105,7 @@ class ToDoItemProcessorTest {
         List<Task> tasks = asList(mock(Task.class), mock(Task.class));
         given(story.getTasks()).willReturn(tasks);
         given(story.isAssigned()).willReturn(true);
-        given(story.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
@@ -120,7 +120,7 @@ class ToDoItemProcessorTest {
     void shouldProcessDefinedTask() {
         Sprint sprint = mock(Sprint.class);
         Task task = task(DEFINED);
-        given(task.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(task).accept(any());
         given(task.getCurrentSprint()).willReturn(sprint);
 
         processor.processFor(task);
@@ -141,7 +141,7 @@ class ToDoItemProcessorTest {
         Epic epic = epic(DEFINED);
         given(epic.getProject()).willReturn(project);
         given(epic.getId()).willReturn(epicId);
-        given(epic.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(epic).accept(any());
 
         processor.processFor(epic);
 
@@ -196,7 +196,7 @@ class ToDoItemProcessorTest {
         Task task = task(DONE);
         Story story = story(IN_PROGRESS);
         given(task.getStory()).willReturn(story);
-        given(task.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(task).accept(any());
 
         processor.processFor(task);
 
@@ -214,7 +214,7 @@ class ToDoItemProcessorTest {
         given(story.getId()).willReturn(storyId);
         Task task = task(DONE);
         given(task.getStory()).willReturn(story);
-        given(task.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(task).accept(any());
 
         processor.processFor(task);
 
@@ -233,7 +233,7 @@ class ToDoItemProcessorTest {
         long storyId = 13;
         Story story = story(DONE);
         given(story.getId()).willReturn(storyId);
-        given(story.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
@@ -249,7 +249,7 @@ class ToDoItemProcessorTest {
     @Test
     void shouldDoNothingWhenProcessDoneEpic() {
         Epic epic = epic(DONE);
-        given(epic.accept(any())).willCallRealMethod();
+        doCallRealMethod().when(epic).accept(any());
 
         processor.processFor(epic);
 

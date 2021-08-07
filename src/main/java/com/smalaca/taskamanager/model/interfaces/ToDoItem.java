@@ -26,5 +26,5 @@ public interface ToDoItem {
 
     Long getId();
 
-    boolean accept(ToDoItemVisitor visitor);
+    void accept(ToDoItemVisitor visitor);
 }

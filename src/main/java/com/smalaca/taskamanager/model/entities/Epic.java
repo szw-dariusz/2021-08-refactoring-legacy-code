@@ -57,9 +57,8 @@ public class Epic implements ToDoItem {
     }
 
     @Override
-    public boolean accept(ToDoItemVisitor visitor) {
+    public void accept(ToDoItemVisitor visitor) {
         visitor.visit(this);
-        return true;
     }
 
     public String getTitle() {
