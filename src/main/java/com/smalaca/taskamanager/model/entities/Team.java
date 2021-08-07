@@ -39,6 +39,7 @@ public class Team {
         return id;
     }
 
+    @Deprecated
     public void setName(String name) {
         this.name = name;
     }
@@ -68,6 +69,7 @@ public class Team {
         return codename;
     }
 
+    @Deprecated
     public void setCodename(Codename codename) {
         this.codename = codename;
     }
@@ -77,6 +79,7 @@ public class Team {
         return description;
     }
 
+    @Deprecated
     public void setDescription(String description) {
         this.description = description;
     }
@@ -118,6 +121,20 @@ public class Team {
 
     private List<Long> getMembersIds() {
         return members.stream().map(User::getId).collect(toList());
+    }
+
+    public void update(final TeamDto teamDto) {
+        if (teamDto.getName() != null) {
+            this.name = teamDto.getName();
+        }
+
+        if (teamDto.getCodenameShort() != null && teamDto.getCodenameFull() != null) {
+            this.codename = new Codename(teamDto.getCodenameShort(), teamDto.getCodenameFull());
+        }
+
+        if (teamDto.getDescription() != null) {
+            this.description = teamDto.getDescription();
+        }
     }
 
     @Override
