@@ -1,5 +1,8 @@
 package com.smalaca.taskamanager.dto;
 
+import com.fasterxml.jackson.databind.PropertyMetadata;
+import com.fasterxml.jackson.databind.deser.SettableBeanProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,18 @@ public class TeamDto {
     private String codenameFull;
     private String description;
     private List<Long> userIds = new ArrayList<>();
+
+    @Deprecated
+    public TeamDto() {}
+
+    private TeamDto(Builder builder) {
+        id = builder.id;
+        name = builder.name;
+        codenameShort = builder.shortName;
+        codenameFull = builder.fullName;
+        description = builder.description;
+        userIds = builder.membersIds;
+    }
 
     public Long getId() {
         return id;
@@ -57,5 +72,48 @@ public class TeamDto {
 
     public void setUserIds(List<Long> userIds) {
         this.userIds = userIds;
+    }
+
+    public static class Builder {
+        private Long id;
+        private String name;
+        private String fullName;
+        private String description;
+        private List<Long> membersIds;
+        private String shortName;
+
+        public static Builder teamDto() {
+            return new Builder();
+        }
+
+        public TeamDto build() {
+            return new TeamDto(this);
+        }
+
+        public Builder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withUserIds(List<Long> membersIds) {
+            this.membersIds = membersIds;
+            return this;
+        }
+
+        public Builder withCodename(String shortName, String fullName) {
+            this.shortName = shortName;
+            this.fullName = fullName;
+            return this;
+        }
     }
 }

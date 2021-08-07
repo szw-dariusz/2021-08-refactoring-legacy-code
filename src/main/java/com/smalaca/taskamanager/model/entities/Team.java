@@ -129,19 +129,17 @@ public class Team {
     }
 
     public TeamDto asTeamDto() {
-        TeamDto dto = new TeamDto();
-        dto.setId(id);
-        dto.setName(name);
+        TeamDto.Builder builder = TeamDto.Builder.teamDto()
+            .withId(id)
+            .withName(name)
+            .withDescription(description)
+            .withUserIds(getMembersIds());
 
         if (hasCodename()) {
-            dto.setCodenameShort(getShortNameOfCodename());
-            dto.setCodenameFull(getFullNameOfCodename());
+            builder.withCodename(getShortNameOfCodename(), getFullNameOfCodename());
         }
 
-        dto.setDescription(description);
-        dto.setUserIds(getMembersIds());
-
-        return dto;
+        return builder.build();
     }
 
     private boolean hasCodename() {
