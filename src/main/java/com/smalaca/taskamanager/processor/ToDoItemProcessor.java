@@ -1,14 +1,15 @@
 package com.smalaca.taskamanager.processor;
 
+import com.google.common.collect.ImmutableMap;
 import com.smalaca.taskamanager.events.EpicReadyToPrioritize;
 import com.smalaca.taskamanager.events.StoryApprovedEvent;
 import com.smalaca.taskamanager.events.StoryDoneEvent;
 import com.smalaca.taskamanager.events.TaskApprovedEvent;
-import com.smalaca.taskamanager.events.ToDoItemReleasedEvent;
 import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Story;
 import com.smalaca.taskamanager.model.entities.Task;
+import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.model.interfaces.ToDoItem;
 import com.smalaca.taskamanager.registry.EventsRegistry;
 import com.smalaca.taskamanager.service.CommunicationService;
@@ -17,7 +18,11 @@ import com.smalaca.taskamanager.service.SprintBacklogService;
 import com.smalaca.taskamanager.service.StoryService;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.RELEASED;
 
 @Component
 public class ToDoItemProcessor {
@@ -26,6 +31,7 @@ public class ToDoItemProcessor {
     private final ProjectBacklogService projectBacklogService;
     private final CommunicationService communicationService;
     private final SprintBacklogService sprintBacklogService;
+    private final Map<ToDoItemStatus, ToDoItemState> states;
 
     public ToDoItemProcessor(
             StoryService storyService, EventsRegistry eventsRegistry, ProjectBacklogService projectBacklogService,
@@ -35,6 +41,9 @@ public class ToDoItemProcessor {
         this.projectBacklogService = projectBacklogService;
         this.communicationService = communicationService;
         this.sprintBacklogService = sprintBacklogService;
+        states = ImmutableMap.of(
+                RELEASED, new ReleasedToDoItem(eventsRegistry)
+        );
     }
 
     public void processFor(ToDoItem toDoItem) {
@@ -56,7 +65,7 @@ public class ToDoItemProcessor {
                 break;
 
             case RELEASED:
-                processReleased(toDoItem);
+                states.get(RELEASED).process(toDoItem);
                 break;
 
             default:
@@ -135,11 +144,5 @@ public class ToDoItemProcessor {
                 storyService.attachPartialApprovalFor(task.getStory().getId(), task.getId());
             }
         }
-    }
-
-    private void processReleased(ToDoItem toDoItem) {
-        ToDoItemReleasedEvent event = new ToDoItemReleasedEvent();
-        event.setToDoItemId(toDoItem.getId());
-        eventsRegistry.publish(event);
     }
 }
