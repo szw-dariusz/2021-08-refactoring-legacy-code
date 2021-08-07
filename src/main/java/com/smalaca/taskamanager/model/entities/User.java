@@ -161,27 +161,24 @@ public class User {
     }
 
     public UserDto asUserDto() {
-        UserDto userDto = new UserDto();
-        userDto.setId(id);
-        userDto.setFirstName(getFirstName());
-        userDto.setLastName(getLastName());
-        userDto.setLogin(login);
-        userDto.setPassword(password);
+        UserDto.Builder builder = UserDto.Builder.userDto()
+            .withId(id)
+            .withName(getFirstName(), getLastName())
+            .withCredentials(login, password);
 
         if (hasTeamRole()) {
-            userDto.setTeamRole(getTeamRoleName());
+            builder.withTeamRole(getTeamRoleName());
         }
 
         if (hasPhoneNumber()) {
-            userDto.setPhonePrefix(getPrefixOfPhone());
-            userDto.setPhoneNumber(getNumberOfPhone());
+            builder.withPhone(getPrefixOfPhone(), getNumberOfPhone());
         }
 
         if (hasEmailAddress()) {
-            userDto.setEmailAddress(getEmail());
+            builder.withEmailAddress(getEmail());
         }
         
-        return userDto;
+        return builder.build();
     }
 
     private String getFirstName() {
