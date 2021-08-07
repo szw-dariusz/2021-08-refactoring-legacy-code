@@ -27,34 +27,9 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> usersDtos = new ArrayList<>();
-
         for (User user : userRepository.findAll()) {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setFirstName(user.getUserName().getFirstName());
-            userDto.setLastName(user.getUserName().getLastName());
-            userDto.setLogin(user.getLogin());
-            userDto.setPassword(user.getPassword());
-
-            TeamRole teamRole = user.getTeamRole();
-            if (teamRole != null) {
-                userDto.setTeamRole(teamRole.name());
-            }
-
-            PhoneNumber phoneNumber = user.getPhoneNumber();
-            if (phoneNumber != null) {
-                userDto.setPhonePrefix(phoneNumber.getPrefix());
-                userDto.setPhoneNumber(phoneNumber.getNumber());
-            }
-
-            EmailAddress emailAddress = user.getEmailAddress();
-            if (emailAddress != null) {
-                userDto.setEmailAddress(emailAddress.getEmailAddress());
-            }
-
-            usersDtos.add(userDto);
+            usersDtos.add(user.toDto());
         }
-
         return new ResponseEntity<>(usersDtos, HttpStatus.OK);
     }
 
@@ -130,30 +105,7 @@ public class UserController {
         
         User updated = userRepository.save(user);
 
-        UserDto response = new UserDto();
-        response.setId(updated.getId());
-        response.setFirstName(updated.getUserName().getFirstName());
-        response.setLastName(updated.getUserName().getLastName());
-        response.setLogin(updated.getLogin());
-        response.setPassword(updated.getPassword());
-
-        TeamRole teamRole = updated.getTeamRole();
-        if (teamRole != null) {
-            response.setTeamRole(teamRole.name());
-        }
-
-        PhoneNumber phoneNumber = updated.getPhoneNumber();
-        if (phoneNumber != null) {
-            response.setPhonePrefix(phoneNumber.getPrefix());
-            response.setPhoneNumber(phoneNumber.getNumber());
-        }
-
-        EmailAddress emailAddress = updated.getEmailAddress();
-        if (emailAddress != null) {
-            response.setEmailAddress(emailAddress.getEmailAddress());
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(updated.toDto(), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
