@@ -1,21 +1,13 @@
 package com.smalaca.taskamanager.model.entities;
 
-import com.smalaca.taskamanager.model.embedded.Assignee;
-import com.smalaca.taskamanager.model.embedded.Owner;
-import com.smalaca.taskamanager.model.embedded.Stakeholder;
-import com.smalaca.taskamanager.model.embedded.Watcher;
-import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
-import com.smalaca.taskamanager.model.interfaces.ToDoItem;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
+
+import com.smalaca.taskamanager.model.embedded.*;
+import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
+import com.smalaca.taskamanager.model.interfaces.ToDoItem;
+import com.smalaca.taskamanager.model.interfaces.ToDoItemVisitor;
 
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.TO_BE_DEFINED;
 
@@ -53,6 +45,11 @@ public class Epic implements ToDoItem {
     @Override
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void accept(final ToDoItemVisitor visitor) {
+        visitor.visit(this);
     }
 
     public String getTitle() {

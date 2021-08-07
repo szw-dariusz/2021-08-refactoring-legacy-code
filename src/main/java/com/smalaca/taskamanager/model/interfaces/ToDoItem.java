@@ -1,13 +1,10 @@
 package com.smalaca.taskamanager.model.interfaces;
 
-import com.smalaca.taskamanager.model.embedded.Assignee;
-import com.smalaca.taskamanager.model.embedded.Owner;
-import com.smalaca.taskamanager.model.embedded.Stakeholder;
-import com.smalaca.taskamanager.model.embedded.Watcher;
+import java.util.List;
+
+import com.smalaca.taskamanager.model.embedded.*;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
-
-import java.util.List;
 
 public interface ToDoItem {
     ToDoItemStatus getStatus();
@@ -25,4 +22,6 @@ public interface ToDoItem {
     List<Stakeholder> getStakeholders();
 
     Long getId();
+
+    void accept(ToDoItemVisitor visitor);
 }

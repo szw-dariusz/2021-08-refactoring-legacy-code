@@ -1,41 +1,24 @@
 package com.smalaca.taskamanager.processor;
 
-import com.smalaca.taskamanager.events.EpicReadyToPrioritize;
-import com.smalaca.taskamanager.events.StoryApprovedEvent;
-import com.smalaca.taskamanager.events.StoryDoneEvent;
-import com.smalaca.taskamanager.events.TaskApprovedEvent;
-import com.smalaca.taskamanager.events.ToDoItemReleasedEvent;
-import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
-import com.smalaca.taskamanager.model.entities.Epic;
-import com.smalaca.taskamanager.model.entities.ProductOwner;
-import com.smalaca.taskamanager.model.entities.Project;
-import com.smalaca.taskamanager.model.entities.Sprint;
-import com.smalaca.taskamanager.model.entities.Story;
-import com.smalaca.taskamanager.model.entities.Task;
+import java.util.List;
+
+import com.smalaca.taskamanager.events.*;
+import com.smalaca.taskamanager.model.entities.*;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.model.interfaces.ToDoItem;
 import com.smalaca.taskamanager.registry.EventsRegistry;
-import com.smalaca.taskamanager.service.CommunicationService;
-import com.smalaca.taskamanager.service.ProjectBacklogService;
-import com.smalaca.taskamanager.service.SprintBacklogService;
-import com.smalaca.taskamanager.service.StoryService;
+import com.smalaca.taskamanager.service.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.util.List;
-
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.APPROVED;
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DEFINED;
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.IN_PROGRESS;
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.RELEASED;
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.TO_BE_DEFINED;
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -66,10 +49,12 @@ class ToDoItemProcessorTest {
         Story story = story(DEFINED);
         given(story.getTasks()).willReturn(emptyList());
         given(story.getProject()).willReturn(project);
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
         then(story).should().getStatus();
+        then(story).should().accept(any());
         then(story).should().getTasks();
         then(story).should().getProject();
         then(projectBacklogService).should().moveToReadyForDevelopment(story, project);
@@ -82,12 +67,14 @@ class ToDoItemProcessorTest {
         Story story = story(DEFINED);
         List<Task> tasks = asList(mock(Task.class), mock(Task.class));
         given(story.getTasks()).willReturn(tasks);
+        doCallRealMethod().when(story).accept(any());
         given(story.isAssigned()).willReturn(false);
         given(story.getProject()).willReturn(project);
 
         processor.processFor(story);
 
         then(story).should().getStatus();
+        then(story).should().accept(any());
         then(story).should().getTasks();
         then(story).should().isAssigned();
         then(story).should().getProject();
@@ -101,10 +88,12 @@ class ToDoItemProcessorTest {
         List<Task> tasks = asList(mock(Task.class), mock(Task.class));
         given(story.getTasks()).willReturn(tasks);
         given(story.isAssigned()).willReturn(true);
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
         then(story).should().getStatus();
+        then(story).should().accept(any());
         then(story).should().getTasks();
         then(story).should().isAssigned();
         verifyNoMoreInteractions(story, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
@@ -114,11 +103,13 @@ class ToDoItemProcessorTest {
     void shouldProcessDefinedTask() {
         Sprint sprint = mock(Sprint.class);
         Task task = task(DEFINED);
+        doCallRealMethod().when(task).accept(any());
         given(task.getCurrentSprint()).willReturn(sprint);
 
         processor.processFor(task);
 
         then(task).should().getStatus();
+        then(task).should().accept(any());
         then(task).should().getCurrentSprint();
         then(sprintBacklogService).should().moveToReadyForDevelopment(task, sprint);
         verifyNoMoreInteractions(task, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
@@ -133,11 +124,13 @@ class ToDoItemProcessorTest {
         Epic epic = epic(DEFINED);
         given(epic.getProject()).willReturn(project);
         given(epic.getId()).willReturn(epicId);
+        doCallRealMethod().when(epic).accept(any());
 
         processor.processFor(epic);
 
         then(epic).should().getStatus();
         then(epic).should().getId();
+        then(epic).should().accept(any());
         then(epic).should().getProject();
         then(projectBacklogService).should().putOnTop(epic);
         ArgumentCaptor<EpicReadyToPrioritize> captor = ArgumentCaptor.forClass(EpicReadyToPrioritize.class);
@@ -145,16 +138,6 @@ class ToDoItemProcessorTest {
         assertThat(captor.getValue().getEpicId()).isEqualTo(epicId);
         then(communicationService).should().notify(epic, productOwner);
         verifyNoMoreInteractions(epic, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
-    }
-
-    @Test
-    void shouldThrowUnsupportedToDoItemType() {
-        ToDoItem toDoItem = toDoItem(DEFINED);
-
-        assertThrows(UnsupportedToDoItemType.class, () ->processor.processFor(toDoItem));
-
-        then(toDoItem).should().getStatus();
-        verifyNoMoreInteractions(toDoItem, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
     }
 
     @Test
