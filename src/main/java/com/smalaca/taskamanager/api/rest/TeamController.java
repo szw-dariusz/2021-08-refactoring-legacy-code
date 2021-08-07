@@ -94,9 +94,7 @@ public class TeamController {
         }
 
         if (teamDto.getCodenameShort() != null && teamDto.getCodenameFull() != null) {
-            Codename codename = new Codename();
-            codename.setShortName(teamDto.getCodenameShort());
-            codename.setFullName(teamDto.getCodenameFull());
+            Codename codename = new Codename(teamDto.getCodenameShort(), teamDto.getCodenameFull());
             team.setCodename(codename);
         }
 

@@ -4,13 +4,24 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Codename {
+
     private String shortName;
     private String fullName;
+
+    @Deprecated
+    public Codename() {
+    }
+
+    public Codename(final String shortName, final String fullName) {
+        this.shortName = shortName;
+        this.fullName = fullName;
+    }
 
     public String getShortName() {
         return shortName;
     }
 
+    @Deprecated
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
@@ -19,6 +30,7 @@ public class Codename {
         return fullName;
     }
 
+    @Deprecated
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
