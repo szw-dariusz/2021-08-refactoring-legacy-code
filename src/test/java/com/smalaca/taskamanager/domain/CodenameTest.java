@@ -54,9 +54,6 @@ class CodenameTest {
     }
 
     private static Codename codename(String shortName, String fullName) {
-        Codename codename = new Codename();
-        codename.setShortName(shortName);
-        codename.setFullName(fullName);
-        return codename;
+        return new Codename(shortName, fullName);
     }
 }
