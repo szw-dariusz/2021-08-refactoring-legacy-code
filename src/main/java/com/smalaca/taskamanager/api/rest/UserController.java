@@ -124,9 +124,9 @@ public class UserController {
         }
         
         User updated = userRepository.save(user);
-        UserDto upadatedUserDto = updated.asUserDto();
+        UserDto updatedUserDto = updated.asUserDto();
 
-        return new ResponseEntity<>(upadatedUserDto, HttpStatus.OK);
+        return new ResponseEntity<>(updatedUserDto, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
