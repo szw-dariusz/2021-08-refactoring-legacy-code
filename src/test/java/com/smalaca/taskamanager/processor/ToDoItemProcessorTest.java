@@ -40,7 +40,13 @@ class ToDoItemProcessorTest {
         processor.processFor(toDoItem);
 
         then(toDoItem).should().getStatus();
-        verifyNoMoreInteractions(toDoItem, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        then(toDoItem).should().accept(any());
+        verifyNoMoreInteractions(toDoItem,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
@@ -137,27 +143,46 @@ class ToDoItemProcessorTest {
         then(eventsRegistry).should().publish(captor.capture());
         assertThat(captor.getValue().getEpicId()).isEqualTo(epicId);
         then(communicationService).should().notify(epic, productOwner);
-        verifyNoMoreInteractions(epic, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        verifyNoMoreInteractions(epic,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
     void shouldDoNothingWhenProcessInProgressStory() {
         Story story = story(IN_PROGRESS);
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
         then(story).should().getStatus();
-        verifyNoMoreInteractions(story, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        then(story).should().accept(any());
+        verifyNoMoreInteractions(story,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
     void shouldDoNothingWhenProcessInProgressEpic() {
         Epic epic = epic(IN_PROGRESS);
+        doCallRealMethod().when(epic).accept(any());
 
         processor.processFor(epic);
 
         then(epic).should().getStatus();
-        verifyNoMoreInteractions(epic, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        then(epic).should().accept(any());
+        verifyNoMoreInteractions(epic,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
@@ -165,11 +190,13 @@ class ToDoItemProcessorTest {
         Task task = task(IN_PROGRESS);
         Story story = mock(Story.class);
         given(task.getStory()).willReturn(story);
+        doCallRealMethod().when(task).accept(any());
 
         processor.processFor(task);
 
         then(task).should().getStatus();
         then(task).should().getStory();
+        then(task).should().accept(any());
         then(storyService).should().updateProgressOf(story, task);
         verifyNoMoreInteractions(task, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
     }
@@ -179,11 +206,13 @@ class ToDoItemProcessorTest {
         Task task = task(DONE);
         Story story = story(IN_PROGRESS);
         given(task.getStory()).willReturn(story);
+        doCallRealMethod().when(task).accept(any());
 
         processor.processFor(task);
 
         then(task).should().getStatus();
         then(task).should(times(2)).getStory();
+        then(task).should().accept(any());
         then(storyService).should().updateProgressOf(story, task);
         verifyNoMoreInteractions(task, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
     }
@@ -195,11 +224,13 @@ class ToDoItemProcessorTest {
         given(story.getId()).willReturn(storyId);
         Task task = task(DONE);
         given(task.getStory()).willReturn(story);
+        doCallRealMethod().when(task).accept(any());
 
         processor.processFor(task);
 
         then(task).should().getStatus();
         then(task).should(times(2)).getStory();
+        then(task).should().accept(any());
         then(storyService).should().updateProgressOf(story, task);
         ArgumentCaptor<StoryDoneEvent> captor = ArgumentCaptor.forClass(StoryDoneEvent.class);
         then(eventsRegistry).should().publish(captor.capture());
@@ -212,25 +243,39 @@ class ToDoItemProcessorTest {
         long storyId = 13;
         Story story = story(DONE);
         given(story.getId()).willReturn(storyId);
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
         then(story).should().getStatus();
         then(story).should().getId();
+        then(story).should().accept(any());
         ArgumentCaptor<StoryDoneEvent> captor = ArgumentCaptor.forClass(StoryDoneEvent.class);
         then(eventsRegistry).should().publish(captor.capture());
         assertThat(captor.getValue().getStoryId()).isEqualTo(storyId);
-        verifyNoMoreInteractions(story, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        verifyNoMoreInteractions(story,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
     void shouldDoNothingWhenProcessDoneEpic() {
         Epic epic = epic(DONE);
+        doCallRealMethod().when(epic).accept(any());
 
         processor.processFor(epic);
 
         then(epic).should().getStatus();
-        verifyNoMoreInteractions(epic, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        then(epic).should().accept(any());
+        verifyNoMoreInteractions(epic,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
@@ -238,11 +283,13 @@ class ToDoItemProcessorTest {
         Story story = story(APPROVED);
         long storyId = 7;
         given(story.getId()).willReturn(storyId);
+        doCallRealMethod().when(story).accept(any());
 
         processor.processFor(story);
 
         then(story).should().getStatus();
         then(story).should().getId();
+        then(story).should().accept(any());
         ArgumentCaptor<StoryApprovedEvent> captor = ArgumentCaptor.forClass(StoryApprovedEvent.class);
         then(eventsRegistry).should().publish(captor.capture());
         assertThat(captor.getValue().getStoryId()).isEqualTo(storyId);
@@ -255,16 +302,23 @@ class ToDoItemProcessorTest {
         Task task = task(APPROVED);
         given(task.isSubtask()).willReturn(true);
         given(task.getId()).willReturn(taskId);
+        doCallRealMethod().when(task).accept(any());
 
         processor.processFor(task);
 
         then(task).should().getStatus();
         then(task).should().isSubtask();
         then(task).should().getId();
+        then(task).should().accept(any());
         ArgumentCaptor<TaskApprovedEvent> captor = ArgumentCaptor.forClass(TaskApprovedEvent.class);
         then(eventsRegistry).should().publish(captor.capture());
         assertThat(captor.getValue().getTaskId()).isEqualTo(taskId);
-        verifyNoMoreInteractions(task, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        verifyNoMoreInteractions(task,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
@@ -277,6 +331,7 @@ class ToDoItemProcessorTest {
         given(task.getStory()).willReturn(story);
         given(task.getId()).willReturn(taskId);
         given(task.isSubtask()).willReturn(false);
+        doCallRealMethod().when(task).accept(any());
 
         processor.processFor(task);
 
@@ -284,34 +339,100 @@ class ToDoItemProcessorTest {
         then(task).should().isSubtask();
         then(task).should().getStory();
         then(task).should().getId();
+        then(task).should().accept(any());
         then(storyService).should().attachPartialApprovalFor(storyId, taskId);
-        verifyNoMoreInteractions(task, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        verifyNoMoreInteractions(task,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
     void shouldDoNothingWhenProcessApprovedEpic() {
         Epic epic = epic(APPROVED);
+        doCallRealMethod().when(epic).accept(any());
 
         processor.processFor(epic);
 
         then(epic).should().getStatus();
-        verifyNoMoreInteractions(epic, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        then(epic).should().accept(any());
+        verifyNoMoreInteractions(epic,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     @Test
-    void shouldProcessInReleased() {
+    void shouldProcessInReleasedEpic() {
         long toDoItemId = 42;
-        ToDoItem toDoItem = toDoItem(RELEASED);
-        given(toDoItem.getId()).willReturn(toDoItemId);
+        Epic epic = epic(RELEASED);
+        doCallRealMethod().when(epic).accept(any());
+        given(epic.getId()).willReturn(toDoItemId);
 
-        processor.processFor(toDoItem);
+        processor.processFor(epic);
 
-        then(toDoItem).should().getStatus();
-        then(toDoItem).should().getId();
+        then(epic).should().getStatus();
+        then(epic).should().accept(any());
+        then(epic).should().getId();
         ArgumentCaptor<ToDoItemReleasedEvent> captor = ArgumentCaptor.forClass(ToDoItemReleasedEvent.class);
         then(eventsRegistry).should().publish(captor.capture());
         assertThat(captor.getValue().getToDoItemId()).isEqualTo(toDoItemId);
-        verifyNoMoreInteractions(toDoItem, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
+        verifyNoMoreInteractions(epic,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
+    }
+
+    @Test
+    void shouldProcessInReleasedTask() {
+        long toDoItemId = 42;
+        Task task = task(RELEASED);
+        doCallRealMethod().when(task).accept(any());
+        given(task.getId()).willReturn(toDoItemId);
+
+        processor.processFor(task);
+
+        then(task).should().getStatus();
+        then(task).should().accept(any());
+        then(task).should().getId();
+        ArgumentCaptor<ToDoItemReleasedEvent> captor = ArgumentCaptor.forClass(ToDoItemReleasedEvent.class);
+        then(eventsRegistry).should().publish(captor.capture());
+        assertThat(captor.getValue().getToDoItemId()).isEqualTo(toDoItemId);
+        verifyNoMoreInteractions(task,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
+    }
+
+    @Test
+    void shouldProcessInReleasedStory() {
+        long toDoItemId = 42;
+        Story story = story(RELEASED);
+        doCallRealMethod().when(story).accept(any());
+        given(story.getId()).willReturn(toDoItemId);
+
+        processor.processFor(story);
+
+        then(story).should().getStatus();
+        then(story).should().accept(any());
+        then(story).should().getId();
+        ArgumentCaptor<ToDoItemReleasedEvent> captor = ArgumentCaptor.forClass(ToDoItemReleasedEvent.class);
+        then(eventsRegistry).should().publish(captor.capture());
+        assertThat(captor.getValue().getToDoItemId()).isEqualTo(toDoItemId);
+        verifyNoMoreInteractions(story,
+                                 storyService,
+                                 eventsRegistry,
+                                 projectBacklogService,
+                                 communicationService,
+                                 sprintBacklogService);
     }
 
     private ToDoItem toDoItem(ToDoItemStatus status) {

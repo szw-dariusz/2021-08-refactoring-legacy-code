@@ -4,9 +4,15 @@ import com.smalaca.taskamanager.model.entities.*;
 
 public interface ToDoItemVisitor {
 
-	void visit(Epic epic);
+	default void visit(Epic epic) {
 
-	void visit(Story story);
+	}
 
-	void visit(Task task);
+	default void visit(Story story) {
+
+	}
+
+	default void visit(Task task) {
+
+	}
 }
