@@ -63,6 +63,7 @@ public class Team {
         members.remove(user);
     }
 
+    @Deprecated
     public Codename getCodename() {
         return codename;
     }
