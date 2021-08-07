@@ -1,17 +1,12 @@
 package com.smalaca.taskamanager.model.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
 import com.smalaca.taskamanager.model.embedded.Codename;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Team {
@@ -63,6 +58,7 @@ public class Team {
         members.remove(user);
     }
 
+    @Deprecated
     public Codename getCodename() {
         return codename;
     }
@@ -89,6 +85,14 @@ public class Team {
 
     public boolean hasCodename() {
         return codename != null;
+    }
+
+    public String getFullNameOfCodeName() {
+        return codename.getFullName();
+    }
+
+    public String getShortNameOfCodeName() {
+        return codename.getShortName();
     }
 
     @Override
