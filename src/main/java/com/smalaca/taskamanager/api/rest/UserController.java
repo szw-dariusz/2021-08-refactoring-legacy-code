@@ -80,25 +80,22 @@ public class UserController {
 
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
-            userDto.setFirstName(user.getUserName().getFirstName());
-            userDto.setLastName(user.getUserName().getLastName());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setLastName(user.getLastName());
             userDto.setLogin(user.getLogin());
             userDto.setPassword(user.getPassword());
 
-            TeamRole teamRole = user.getTeamRole();
-            if (teamRole != null) {
-                userDto.setTeamRole(teamRole.name());
+            if (user.hasTeamRole()) {
+                userDto.setTeamRole(user.getTeamRoleName());
             }
 
-            PhoneNumber phoneNumber = user.getPhoneNumber();
-            if (phoneNumber != null) {
-                userDto.setPhonePrefix(phoneNumber.getPrefix());
-                userDto.setPhoneNumber(phoneNumber.getNumber());
+            if (user.hasPhoneNumber()) {
+                userDto.setPhonePrefix(user.getPrefixOfPhone());
+                userDto.setPhoneNumber(user.getNumberOfPhone());
             }
 
-            EmailAddress emailAddress = user.getEmailAddress();
-            if (emailAddress != null) {
-                userDto.setEmailAddress(emailAddress.getEmailAddress());
+            if (user.hasEmailAddress()) {
+                userDto.setEmailAddress(user.getEmail());
             }
 
             return new ResponseEntity<>(userDto, HttpStatus.OK);
