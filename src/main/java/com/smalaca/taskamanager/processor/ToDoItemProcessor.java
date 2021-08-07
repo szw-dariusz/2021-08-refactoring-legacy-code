@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.RELEASED;
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.TO_BE_DEFINED;
 
 @Component
 public class ToDoItemProcessor {
@@ -33,34 +34,30 @@ public class ToDoItemProcessor {
         this.sprintBacklogService = sprintBacklogService;
         var states = new EnumMap<ToDoItemStatus, ToDoItemState>(ToDoItemStatus.class);
         states.put(RELEASED, new ReleasedToDoItem(eventsRegistry));
+        states.put(TO_BE_DEFINED, new ToBeDefinedItem());
         this.states = Collections.unmodifiableMap(states);
     }
 
     public void processFor(ToDoItem toDoItem) {
-        switch (toDoItem.getStatus()) {
+        var status = toDoItem.getStatus();
+        switch (status) {
             case DEFINED:
                 processDefined(toDoItem);
-                break;
+                return;
 
             case IN_PROGRESS:
                 processInProgress(toDoItem);
-                break;
+                return;
 
             case DONE:
                 processDone(toDoItem);
-                break;
+                return;
 
             case APPROVED:
                 processApproved(toDoItem);
-                break;
-
-            case RELEASED:
-                states.get(RELEASED).process(toDoItem);
-                break;
-
-            default:
-                break;
+                return;
         }
+        states.get(status).process(toDoItem);
     }
 
     private void processDefined(ToDoItem toDoItem) {
