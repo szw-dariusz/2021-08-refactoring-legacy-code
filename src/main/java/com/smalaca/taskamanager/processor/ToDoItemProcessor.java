@@ -37,6 +37,7 @@ public class ToDoItemProcessor {
         this.communicationService = communicationService;
         this.sprintBacklogService = sprintBacklogService;
         states = ImmutableMap.of(
+                IN_PROGRESS, new InProgressToDoItem(storyService),
                 DONE, new DoneToDoItem(storyService, eventsRegistry),
                 APPROVED, new ApprovedToDoItem(eventsRegistry, storyService),
                 RELEASED, new ReleasedToDoItem(eventsRegistry),
@@ -49,10 +50,6 @@ public class ToDoItemProcessor {
         switch (status) {
             case DEFINED:
                 processDefined(toDoItem);
-                break;
-
-            case IN_PROGRESS:
-                processInProgress(toDoItem);
                 break;
 
             default:
@@ -86,13 +83,6 @@ public class ToDoItemProcessor {
                     throw new UnsupportedToDoItemType();
                 }
             }
-        }
-    }
-
-    private void processInProgress(ToDoItem toDoItem) {
-        if (toDoItem instanceof Task) {
-            Task task = (Task) toDoItem;
-            storyService.updateProgressOf(task.getStory(), task);
         }
     }
 }
