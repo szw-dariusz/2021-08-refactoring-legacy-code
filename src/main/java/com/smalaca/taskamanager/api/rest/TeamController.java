@@ -76,8 +76,8 @@ public class TeamController {
             dto.setName(team.getName());
 
             if (team.hasCodename()) {
-                dto.setCodenameShort(team.getCodename().getShortName());
-                dto.setCodenameFull(team.getCodename().getFullName());
+                dto.setCodenameShort(team.getShortNameOfCodename());
+                dto.setCodenameFull(team.getFullNameOfCodename());
             }
 
             dto.setDescription(team.getDescription());
