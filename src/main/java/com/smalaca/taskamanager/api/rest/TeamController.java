@@ -104,17 +104,7 @@ public class TeamController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (teamDto.getName() != null) {
-            team.setName(teamDto.getName());
-        }
-
-        if (teamDto.getCodenameShort() != null && teamDto.getCodenameFull() != null) {
-            team.setCodename(new Codename(teamDto.getCodenameShort(), teamDto.getCodenameFull()));
-        }
-
-        if (teamDto.getDescription() != null) {
-            team.setDescription(teamDto.getDescription());
-        }
+        team.update(teamDto);
 
         Team updated = teamRepository.save(team);
 
