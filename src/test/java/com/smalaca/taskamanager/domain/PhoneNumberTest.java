@@ -1,31 +1,23 @@
 package com.smalaca.taskamanager.domain;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PhoneNumberTest {
+
     private static final String PHONE_NUMBER = "123456789";
     private static final String PHONE_PREFIX = "+48";
 
-    @Test
-    void shouldCreatePhoneNumber() {
-        String prefix = "+48";
-        String number = "123456789";
-
-        PhoneNumber actual = new PhoneNumber();
-        actual.setPrefix(prefix);
-        actual.setNumber(number);
-
-        assertThat(actual.getPrefix()).isEqualTo(prefix);
-        assertThat(actual.getNumber()).isEqualTo(number);
+    private static PhoneNumber phoneNumber(String prefix, String number) {
+        return new PhoneNumber(prefix, number);
     }
 
     @Test
@@ -66,10 +58,14 @@ class PhoneNumberTest {
         return phoneNumber(PHONE_PREFIX, PHONE_NUMBER);
     }
 
-    private static PhoneNumber phoneNumber(String prefix, String number) {
-        PhoneNumber phoneNumber = new PhoneNumber();
-        phoneNumber.setPrefix(prefix);
-        phoneNumber.setNumber(number);
-        return phoneNumber;
+    @Test
+    void shouldCreatePhoneNumber() {
+        String prefix = "+48";
+        String number = "123456789";
+
+        PhoneNumber actual = new PhoneNumber(prefix, number);
+
+        assertThat(actual.getPrefix()).isEqualTo(prefix);
+        assertThat(actual.getNumber()).isEqualTo(number);
     }
 }

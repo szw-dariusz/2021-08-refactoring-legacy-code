@@ -1,14 +1,24 @@
 package com.smalaca.taskamanager.model.embedded;
 
+import javax.persistence.Embeddable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.persistence.Embeddable;
-
 @Embeddable
 public class EmailAddress {
+
     private String emailAddress;
 
+    @Deprecated
+    public EmailAddress() {
+    }
+
+    public EmailAddress(final String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    @Deprecated
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }

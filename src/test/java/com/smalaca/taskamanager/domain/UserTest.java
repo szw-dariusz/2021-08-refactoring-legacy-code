@@ -1,8 +1,9 @@
 package com.smalaca.taskamanager.domain;
 
-import com.smalaca.taskamanager.model.embedded.EmailAddress;
-import com.smalaca.taskamanager.model.embedded.PhoneNumber;
-import com.smalaca.taskamanager.model.embedded.UserName;
+import java.math.BigDecimal;
+import java.util.List;
+
+import com.smalaca.taskamanager.model.embedded.*;
 import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.TeamRole;
@@ -10,42 +11,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserTest {
 
-    @Test
-    void shouldCreateUser() {
+    private static User differentUser() {
         User user = new User();
-        user.setLogin("antman");
-        user.setPassword("4ntZ__Ru13Z");
         UserName userName = new UserName();
-        userName.setFirstName("Scott");
-        userName.setLastName("Lang");
+        userName.setFirstName("Peter");
+        userName.setLastName("Parker");
         user.setUserName(userName);
-        user.setTeamRole(TeamRole.DEVELOPER);
-        PhoneNumber phoneNumber = new PhoneNumber();
-        phoneNumber.setPrefix("4NT");
-        phoneNumber.setNumber("421399999");
-        user.setPhoneNumber(phoneNumber);
-        EmailAddress emailAddress = new EmailAddress();
-        emailAddress.setEmailAddress("antman@avengers.com");
+        user.setLogin("spiderman");
+        user.setPassword("responsibility");
+        EmailAddress emailAddress = new EmailAddress("spider.in.the.web@gmail.com");
         user.setEmailAddress(emailAddress);
+        PhoneNumber phoneNumber = new PhoneNumber("000", "098765432");
+        user.setPhoneNumber(phoneNumber);
+        user.setTeamRole(TeamRole.TESTER);
 
-        assertThat(user.getId()).isNull();
-        assertThat(user.getLogin()).isEqualTo("antman");
-        assertThat(user.getPassword()).isEqualTo("4ntZ__Ru13Z");
-        assertThat(user.getUserName().getFirstName()).isEqualTo("Scott");
-        assertThat(user.getUserName().getLastName()).isEqualTo("Lang");
-        assertThat(user.getTeamRole()).isEqualTo(TeamRole.DEVELOPER);
-        assertThat(user.getPhoneNumber().getPrefix()).isEqualTo("4NT");
-        assertThat(user.getPhoneNumber().getNumber()).isEqualTo("421399999");
-        assertThat(user.getEmailAddress().getEmailAddress()).isEqualTo("antman@avengers.com");
+        return user;
     }
 
     @Test
@@ -140,24 +126,30 @@ class UserTest {
         return asList(differentUser(), new User(), BigDecimal.valueOf(13));
     }
 
-    private static User differentUser() {
+    @Test
+    void shouldCreateUser() {
         User user = new User();
+        user.setLogin("antman");
+        user.setPassword("4ntZ__Ru13Z");
         UserName userName = new UserName();
-        userName.setFirstName("Peter");
-        userName.setLastName("Parker");
+        userName.setFirstName("Scott");
+        userName.setLastName("Lang");
         user.setUserName(userName);
-        user.setLogin("spiderman");
-        user.setPassword("responsibility");
-        EmailAddress emailAddress = new EmailAddress();
-        emailAddress.setEmailAddress("spider.in.the.web@gmail.com");
-        user.setEmailAddress(emailAddress);
-        PhoneNumber phoneNumber = new PhoneNumber();
-        phoneNumber.setPrefix("000");
-        phoneNumber.setNumber("098765432");
+        user.setTeamRole(TeamRole.DEVELOPER);
+        PhoneNumber phoneNumber = new PhoneNumber("4NT", "421399999");
         user.setPhoneNumber(phoneNumber);
-        user.setTeamRole(TeamRole.TESTER);
+        EmailAddress emailAddress = new EmailAddress("antman@avengers.com");
+        user.setEmailAddress(emailAddress);
 
-        return user;
+        assertThat(user.getId()).isNull();
+        assertThat(user.getLogin()).isEqualTo("antman");
+        assertThat(user.getPassword()).isEqualTo("4ntZ__Ru13Z");
+        assertThat(user.getUserName().getFirstName()).isEqualTo("Scott");
+        assertThat(user.getUserName().getLastName()).isEqualTo("Lang");
+        assertThat(user.getTeamRole()).isEqualTo(TeamRole.DEVELOPER);
+        assertThat(user.getPhoneNumber().getPrefix()).isEqualTo("4NT");
+        assertThat(user.getPhoneNumber().getNumber()).isEqualTo("421399999");
+        assertThat(user.getEmailAddress().getEmailAddress()).isEqualTo("antman@avengers.com");
     }
 
     private User user() {
@@ -168,12 +160,9 @@ class UserTest {
         user.setUserName(userName);
         user.setLogin("Scarlet Witch");
         user.setPassword("qw3rty");
-        EmailAddress emailAddress = new EmailAddress();
-        emailAddress.setEmailAddress("wanda@gmail.com");
+        EmailAddress emailAddress = new EmailAddress("wanda@gmail.com");
         user.setEmailAddress(emailAddress);
-        PhoneNumber phoneNumber = new PhoneNumber();
-        phoneNumber.setPrefix("000");
-        phoneNumber.setNumber("123456789");
+        PhoneNumber phoneNumber = new PhoneNumber("000", "123456789");
         user.setPhoneNumber(phoneNumber);
         user.setTeamRole(TeamRole.DEVELOPER);
 

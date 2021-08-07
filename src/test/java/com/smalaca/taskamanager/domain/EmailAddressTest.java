@@ -1,25 +1,21 @@
 package com.smalaca.taskamanager.domain;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EmailAddressTest {
-    @Test
-    void shouldCreateEmailAddress() {
-        String emailAddress = "dummy@fake.domain.com";
 
-        EmailAddress actual = new EmailAddress();
-        actual.setEmailAddress(emailAddress);
-
-        assertThat(actual.getEmailAddress()).isEqualTo(emailAddress);
+    private static List<Object> notEqualEmailAddresses() {
+        EmailAddress emailAddress = new EmailAddress("natasha.romanov@avengers.com");
+        return asList(emailAddress, BigDecimal.valueOf(13));
     }
 
     @Test
@@ -52,16 +48,16 @@ class EmailAddressTest {
         assertThat(actual.hashCode()).isNotEqualTo(emailAddress.hashCode());
     }
 
-    private static List<Object> notEqualEmailAddresses() {
-        EmailAddress emailAddress = new EmailAddress();
-        emailAddress.setEmailAddress("natasha.romanov@avengers.com");
+    @Test
+    void shouldCreateEmailAddress() {
+        String emailAddress = "dummy@fake.domain.com";
 
-        return asList(emailAddress, BigDecimal.valueOf(13));
+        EmailAddress actual = new EmailAddress(emailAddress);
+
+        assertThat(actual.getEmailAddress()).isEqualTo(emailAddress);
     }
 
     private EmailAddress emailAddress() {
-        EmailAddress emailAddress = new EmailAddress();
-        emailAddress.setEmailAddress("tony.stark@avengers.com");
-        return emailAddress;
+        return new EmailAddress("tony.stark@avengers.com");
     }
 }

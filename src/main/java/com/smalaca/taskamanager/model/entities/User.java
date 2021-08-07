@@ -13,6 +13,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Entity
 @SuppressWarnings("MethodCount")
 public class User {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -185,16 +186,11 @@ public class User {
         }
 
         if (userDto.getPhoneNumber() != null) {
-            PhoneNumber phoneNumber = new PhoneNumber();
-            phoneNumber.setPrefix(userDto.getPhonePrefix());
-            phoneNumber.setNumber(userDto.getPhoneNumber());
-            this.phoneNumber = phoneNumber;
+            this.phoneNumber = new PhoneNumber(userDto.getPhonePrefix(), userDto.getPhoneNumber());
         }
 
         if (userDto.getEmailAddress() != null) {
-            EmailAddress emailAddress = new EmailAddress();
-            emailAddress.setEmailAddress(userDto.getEmailAddress());
-            this.emailAddress = emailAddress;
+            this.emailAddress = new EmailAddress(userDto.getEmailAddress());
         }
 
         if (userDto.getTeamRole() != null) {
