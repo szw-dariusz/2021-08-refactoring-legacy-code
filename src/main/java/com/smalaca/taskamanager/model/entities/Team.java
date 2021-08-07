@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import com.smalaca.taskamanager.dto.TeamDto;
 import com.smalaca.taskamanager.model.embedded.Codename;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -86,19 +87,34 @@ public class Team {
         this.project = project;
     }
 
-    public boolean hasCodename() {
+    public TeamDto toDto() {
+        TeamDto dto = new TeamDto();
+        dto.setId(id);
+        dto.setName(name);
+
+        if (hasCodename()) {
+            dto.setCodenameShort(getShortNameOfCodeName());
+            dto.setCodenameFull(getFullNameOfCodeName());
+        }
+
+        dto.setDescription(description);
+        dto.setUserIds(getMembersIds());
+        return dto;
+    }
+
+    private boolean hasCodename() {
         return codename != null;
     }
 
-    public String getFullNameOfCodeName() {
-        return codename.getFullName();
-    }
-
-    public String getShortNameOfCodeName() {
+    private String getShortNameOfCodeName() {
         return codename.getShortName();
     }
 
-    public List<Long> getMembersIds() {
+    private String getFullNameOfCodeName() {
+        return codename.getFullName();
+    }
+
+    private List<Long> getMembersIds() {
         return members.stream().map(User::getId).collect(toList());
     }
 
