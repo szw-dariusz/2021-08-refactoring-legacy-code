@@ -214,7 +214,7 @@ public class TeamController {
         Optional<Team> team = teamRepository.findById(id);
 
         if (team.isEmpty()) {
-            throw new TeamNotFoundException();
+            throw new TeamNotFoundException(id);
         }
 
         return team.get();
