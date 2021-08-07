@@ -1,21 +1,13 @@
 package com.smalaca.taskamanager.model.entities;
 
-import com.smalaca.taskamanager.model.embedded.EmailAddress;
-import com.smalaca.taskamanager.model.embedded.PhoneNumber;
-import com.smalaca.taskamanager.model.embedded.UserName;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.*;
+
+import com.smalaca.taskamanager.model.embedded.*;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @SuppressWarnings("MethodCount")
@@ -65,6 +57,7 @@ public class User {
         this.password = password;
     }
 
+    @Deprecated
     public PhoneNumber getPhoneNumber() {
         return phoneNumber;
     }
@@ -73,6 +66,7 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    @Deprecated
     public EmailAddress getEmailAddress() {
         return emailAddress;
     }
@@ -81,6 +75,7 @@ public class User {
         this.emailAddress = emailAddress;
     }
 
+    @Deprecated
     public TeamRole getTeamRole() {
         return teamRole;
     }
@@ -112,6 +107,42 @@ public class User {
         teams.remove(team);
     }
 
+    public boolean hasPhoneNumber() {
+        return phoneNumber != null;
+    }
+
+    public String getNumberOfPhone() {
+        return phoneNumber.getNumber();
+    }
+
+    public String getPrefixOfPhone() {
+        return phoneNumber.getPrefix();
+    }
+
+    public boolean hasEmailAddress() {
+        return emailAddress != null;
+    }
+
+    public String getEmail() {
+        return emailAddress.getEmailAddress();
+    }
+
+    public boolean hasTeamRole() {
+        return teamRole != null;
+    }
+
+    public String getNameOfTeamRole() {
+        return teamRole.name();
+    }
+
+    public String getUserLastName() {
+        return userName.getLastName();
+    }
+
+    public String getUserFirstName() {
+        return userName.getFirstName();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -138,14 +169,13 @@ public class User {
     @Override
     @SuppressWarnings("MagicNumber")
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(userName)
-                .append(login)
-                .append(password)
-                .append(phoneNumber)
-                .append(emailAddress)
-                .append(teamRole)
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(id)
+                                          .append(userName)
+                                          .append(login)
+                                          .append(password)
+                                          .append(phoneNumber)
+                                          .append(emailAddress)
+                                          .append(teamRole)
+                                          .toHashCode();
     }
 }
