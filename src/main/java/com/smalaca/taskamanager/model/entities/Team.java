@@ -30,6 +30,7 @@ public class Team {
     @ManyToOne
     private Project project;
 
+    @Deprecated
     public String getName() {
         return name;
     }
@@ -71,6 +72,7 @@ public class Team {
         this.codename = codename;
     }
 
+    @Deprecated
     public String getDescription() {
         return description;
     }

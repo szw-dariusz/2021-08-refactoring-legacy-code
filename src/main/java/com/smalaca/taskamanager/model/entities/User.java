@@ -34,6 +34,7 @@ public class User {
     @OneToMany
     private List<Team> teams = new ArrayList<>();
 
+    @Deprecated
     public UserName getUserName() {
         return userName;
     }
@@ -42,6 +43,7 @@ public class User {
         this.userName = userName;
     }
 
+    @Deprecated
     public String getLogin() {
         return login;
     }
@@ -50,6 +52,7 @@ public class User {
         this.login = login;
     }
 
+    @Deprecated
     public String getPassword() {
         return password;
     }
