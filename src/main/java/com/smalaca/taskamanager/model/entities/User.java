@@ -118,26 +118,26 @@ public class User {
     }
 
     public UserDto toDto() {
-        UserDto userDto = new UserDto();
-        userDto.setId(getId());
-        userDto.setFirstName(getUserFirstName());
-        userDto.setLastName(getUserLastName());
-        userDto.setLogin(login);
-        userDto.setPassword(password);
+        var builder = UserDto.builder()
+                             .id(id)
+                             .firstName(getUserFirstName())
+                             .lastName(getUserLastName())
+                             .login(login)
+                             .password(password);
 
         if (hasTeamRole()) {
-            userDto.setTeamRole(getNameOfTeamRole());
+            builder.teamRole(getNameOfTeamRole());
         }
 
         if (hasPhoneNumber()) {
-            userDto.setPhonePrefix(getPrefixOfPhone());
-            userDto.setPhoneNumber(getNumberOfPhone());
+            builder.phonePrefix(getPrefixOfPhone());
+            builder.phoneNumber(getNumberOfPhone());
         }
 
         if (hasEmailAddress()) {
-            userDto.setEmailAddress(getEmail());
+            builder.emailAddress(getEmail());
         }
-        return userDto;
+        return builder.build();
     }
 
     private String getUserFirstName() {
