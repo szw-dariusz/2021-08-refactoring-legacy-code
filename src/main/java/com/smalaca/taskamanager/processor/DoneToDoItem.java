@@ -20,20 +20,6 @@ class DoneToDoItem implements ToDoItemState {
 
     @Override
     public void process(ToDoItem toDoItem) {
-        if (toDoItem instanceof Task) {
-            Task task = (Task) toDoItem;
-            Story story = task.getStory();
-            storyService.updateProgressOf(task.getStory(), task);
-            if (DONE.equals(story.getStatus())) {
-                StoryDoneEvent event = new StoryDoneEvent();
-                event.setStoryId(story.getId());
-                eventsRegistry.publish(event);
-            }
-        } else if (toDoItem instanceof Story) {
-            Story story = (Story) toDoItem;
-            StoryDoneEvent event = new StoryDoneEvent();
-            event.setStoryId(story.getId());
-            eventsRegistry.publish(event);
-        }
+        toDoItem.accept(new DoneToDoItemVisitor(storyService, eventsRegistry));
     }
 }

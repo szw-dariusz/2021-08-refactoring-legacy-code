@@ -196,10 +196,12 @@ class ToDoItemProcessorTest {
         Task task = task(DONE);
         Story story = story(IN_PROGRESS);
         given(task.getStory()).willReturn(story);
+        given(task.accept(any())).willCallRealMethod();
 
         processor.processFor(task);
 
         then(task).should().getStatus();
+        then(task).should().accept(any());
         then(task).should(times(2)).getStory();
         then(storyService).should().updateProgressOf(story, task);
         verifyNoMoreInteractions(task, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
@@ -212,10 +214,12 @@ class ToDoItemProcessorTest {
         given(story.getId()).willReturn(storyId);
         Task task = task(DONE);
         given(task.getStory()).willReturn(story);
+        given(task.accept(any())).willCallRealMethod();
 
         processor.processFor(task);
 
         then(task).should().getStatus();
+        then(task).should().accept(any());
         then(task).should(times(2)).getStory();
         then(storyService).should().updateProgressOf(story, task);
         ArgumentCaptor<StoryDoneEvent> captor = ArgumentCaptor.forClass(StoryDoneEvent.class);
@@ -229,10 +233,12 @@ class ToDoItemProcessorTest {
         long storyId = 13;
         Story story = story(DONE);
         given(story.getId()).willReturn(storyId);
+        given(story.accept(any())).willCallRealMethod();
 
         processor.processFor(story);
 
         then(story).should().getStatus();
+        then(story).should().accept(any());
         then(story).should().getId();
         ArgumentCaptor<StoryDoneEvent> captor = ArgumentCaptor.forClass(StoryDoneEvent.class);
         then(eventsRegistry).should().publish(captor.capture());
@@ -243,9 +249,11 @@ class ToDoItemProcessorTest {
     @Test
     void shouldDoNothingWhenProcessDoneEpic() {
         Epic epic = epic(DONE);
+        given(epic.accept(any())).willCallRealMethod();
 
         processor.processFor(epic);
 
+        then(epic).should().accept(any());
         then(epic).should().getStatus();
         verifyNoMoreInteractions(epic, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
     }
