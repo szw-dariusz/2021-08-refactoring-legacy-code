@@ -66,10 +66,12 @@ class ToDoItemProcessorTest {
         Story story = story(DEFINED);
         given(story.getTasks()).willReturn(emptyList());
         given(story.getProject()).willReturn(project);
+        given(story.accept(any())).willCallRealMethod();
 
         processor.processFor(story);
 
         then(story).should().getStatus();
+        then(story).should().accept(any());
         then(story).should().getTasks();
         then(story).should().getProject();
         then(projectBacklogService).should().moveToReadyForDevelopment(story, project);
@@ -103,10 +105,12 @@ class ToDoItemProcessorTest {
         List<Task> tasks = asList(mock(Task.class), mock(Task.class));
         given(story.getTasks()).willReturn(tasks);
         given(story.isAssigned()).willReturn(true);
+        given(story.accept(any())).willCallRealMethod();
 
         processor.processFor(story);
 
         then(story).should().getStatus();
+        then(story).should().accept(any());
         then(story).should().getTasks();
         then(story).should().isAssigned();
         verifyNoMoreInteractions(story, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
@@ -116,11 +120,13 @@ class ToDoItemProcessorTest {
     void shouldProcessDefinedTask() {
         Sprint sprint = mock(Sprint.class);
         Task task = task(DEFINED);
+        given(task.accept(any())).willCallRealMethod();
         given(task.getCurrentSprint()).willReturn(sprint);
 
         processor.processFor(task);
 
         then(task).should().getStatus();
+        then(task).should().accept(any());
         then(task).should().getCurrentSprint();
         then(sprintBacklogService).should().moveToReadyForDevelopment(task, sprint);
         verifyNoMoreInteractions(task, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
@@ -135,11 +141,13 @@ class ToDoItemProcessorTest {
         Epic epic = epic(DEFINED);
         given(epic.getProject()).willReturn(project);
         given(epic.getId()).willReturn(epicId);
+        given(epic.accept(any())).willCallRealMethod();
 
         processor.processFor(epic);
 
         then(epic).should().getStatus();
         then(epic).should().getId();
+        then(epic).should().accept(any());
         then(epic).should().getProject();
         then(projectBacklogService).should().putOnTop(epic);
         ArgumentCaptor<EpicReadyToPrioritize> captor = ArgumentCaptor.forClass(EpicReadyToPrioritize.class);
@@ -147,16 +155,6 @@ class ToDoItemProcessorTest {
         assertThat(captor.getValue().getEpicId()).isEqualTo(epicId);
         then(communicationService).should().notify(epic, productOwner);
         verifyNoMoreInteractions(epic, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
-    }
-
-    @Test
-    void shouldThrowUnsupportedToDoItemType() {
-        ToDoItem toDoItem = toDoItem(DEFINED);
-
-        assertThrows(UnsupportedToDoItemType.class, () ->processor.processFor(toDoItem));
-
-        then(toDoItem).should().getStatus();
-        verifyNoMoreInteractions(toDoItem, storyService, eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
     }
 
     @Test
