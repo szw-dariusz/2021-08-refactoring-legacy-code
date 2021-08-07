@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.RELEASED;
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.*;
 
 @Component
 public class ToDoItemProcessor {
@@ -42,12 +41,14 @@ public class ToDoItemProcessor {
         this.communicationService = communicationService;
         this.sprintBacklogService = sprintBacklogService;
         states = ImmutableMap.of(
-                RELEASED, new ReleasedToDoItem(eventsRegistry)
+                RELEASED, new ReleasedToDoItem(eventsRegistry),
+                TO_BE_DEFINED, new ToBeDefinedToDoItem()
         );
     }
 
     public void processFor(ToDoItem toDoItem) {
-        switch (toDoItem.getStatus()) {
+        ToDoItemStatus status = toDoItem.getStatus();
+        switch (status) {
             case DEFINED:
                 processDefined(toDoItem);
                 break;
@@ -64,12 +65,8 @@ public class ToDoItemProcessor {
                 processApproved(toDoItem);
                 break;
 
-            case RELEASED:
-                states.get(RELEASED).process(toDoItem);
-                break;
-
             default:
-                break;
+                states.get(status).process(toDoItem);
         }
     }
 
