@@ -25,4 +25,6 @@ public interface ToDoItem {
     List<Stakeholder> getStakeholders();
 
     Long getId();
+
+    boolean accept(ToDoItemVisitor visitor);
 }

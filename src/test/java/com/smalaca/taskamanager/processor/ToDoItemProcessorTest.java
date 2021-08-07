@@ -34,8 +34,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -82,12 +82,14 @@ class ToDoItemProcessorTest {
         Story story = story(DEFINED);
         List<Task> tasks = asList(mock(Task.class), mock(Task.class));
         given(story.getTasks()).willReturn(tasks);
+        given(story.accept(any())).willCallRealMethod();
         given(story.isAssigned()).willReturn(false);
         given(story.getProject()).willReturn(project);
 
         processor.processFor(story);
 
         then(story).should().getStatus();
+        then(story).should().accept(any());
         then(story).should().getTasks();
         then(story).should().isAssigned();
         then(story).should().getProject();
