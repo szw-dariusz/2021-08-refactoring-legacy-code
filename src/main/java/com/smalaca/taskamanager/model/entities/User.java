@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
+import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.model.embedded.*;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -107,40 +108,63 @@ public class User {
         teams.remove(team);
     }
 
-    public boolean hasPhoneNumber() {
-        return phoneNumber != null;
+    public UserDto toDto() {
+        UserDto userDto = new UserDto();
+        userDto.setId(getId());
+        userDto.setFirstName(getUserFirstName());
+        userDto.setLastName(getUserLastName());
+        userDto.setLogin(login);
+        userDto.setPassword(password);
+
+        if (hasTeamRole()) {
+            userDto.setTeamRole(getNameOfTeamRole());
+        }
+
+        if (hasPhoneNumber()) {
+            userDto.setPhonePrefix(getPrefixOfPhone());
+            userDto.setPhoneNumber(getNumberOfPhone());
+        }
+
+        if (hasEmailAddress()) {
+            userDto.setEmailAddress(getEmail());
+        }
+        return userDto;
     }
 
-    public String getNumberOfPhone() {
-        return phoneNumber.getNumber();
+    private String getUserFirstName() {
+        return userName.getFirstName();
     }
 
-    public String getPrefixOfPhone() {
-        return phoneNumber.getPrefix();
-    }
-
-    public boolean hasEmailAddress() {
-        return emailAddress != null;
-    }
-
-    public String getEmail() {
-        return emailAddress.getEmailAddress();
-    }
-
-    public boolean hasTeamRole() {
-        return teamRole != null;
-    }
-
-    public String getNameOfTeamRole() {
-        return teamRole.name();
-    }
-
-    public String getUserLastName() {
+    private String getUserLastName() {
         return userName.getLastName();
     }
 
-    public String getUserFirstName() {
-        return userName.getFirstName();
+    private boolean hasTeamRole() {
+        return teamRole != null;
+    }
+
+    private String getNameOfTeamRole() {
+        return teamRole.name();
+    }
+
+    private boolean hasPhoneNumber() {
+        return phoneNumber != null;
+    }
+
+    private String getPrefixOfPhone() {
+        return phoneNumber.getPrefix();
+    }
+
+    private String getNumberOfPhone() {
+        return phoneNumber.getNumber();
+    }
+
+    private boolean hasEmailAddress() {
+        return emailAddress != null;
+    }
+
+    private String getEmail() {
+        return emailAddress.getEmailAddress();
     }
 
     @Override

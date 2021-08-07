@@ -60,33 +60,11 @@ public class UserController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
-        Optional<User> found = userRepository.findById(id);
-        if (found.isEmpty()) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        User user = found.get();
-
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setFirstName(user.getUserFirstName());
-        userDto.setLastName(user.getUserLastName());
-        userDto.setLogin(user.getLogin());
-        userDto.setPassword(user.getPassword());
-
-        if (user.hasTeamRole()) {
-            userDto.setTeamRole(user.getNameOfTeamRole());
-        }
-
-        if (user.hasPhoneNumber()) {
-            userDto.setPhonePrefix(user.getPrefixOfPhone());
-            userDto.setPhoneNumber(user.getNumberOfPhone());
-        }
-
-        if (user.hasEmailAddress()) {
-            userDto.setEmailAddress(user.getEmail());
-        }
-
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+        return new ResponseEntity<>(user.get().toDto(), HttpStatus.OK);
     }
 
     @PostMapping
