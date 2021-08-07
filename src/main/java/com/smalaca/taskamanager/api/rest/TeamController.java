@@ -67,8 +67,10 @@ public class TeamController {
     @GetMapping("/{id}")
     @Transactional
     public ResponseEntity<TeamDto> findById(@PathVariable Long id) {
-        try {
-            Team team = getTeamById(id);
+        Optional<Team> found = teamRepository.findById(id);
+
+        if (found.isPresent()) {
+            Team team = found.get();
             TeamDto dto = new TeamDto();
             dto.setId(team.getId());
             dto.setName(team.getName());
@@ -82,7 +84,7 @@ public class TeamController {
             dto.setUserIds(team.getMembers().stream().map(User::getId).collect(toList()));
 
             return new ResponseEntity<>(dto, HttpStatus.OK);
-        } catch (TeamNotFoundException exception) {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
