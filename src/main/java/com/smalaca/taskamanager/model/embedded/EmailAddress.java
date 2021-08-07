@@ -9,6 +9,14 @@ import javax.persistence.Embeddable;
 public class EmailAddress {
     private String emailAddress;
 
+    @Deprecated
+    public EmailAddress() {}
+
+    public EmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    @Deprecated
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
