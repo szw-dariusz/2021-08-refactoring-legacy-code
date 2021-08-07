@@ -48,6 +48,7 @@ public class User {
         return login;
     }
 
+    @Deprecated
     public void setLogin(String login) {
         this.login = login;
     }
@@ -57,6 +58,7 @@ public class User {
         return password;
     }
 
+    @Deprecated
     public void setPassword(String password) {
         this.password = password;
     }
@@ -66,6 +68,7 @@ public class User {
         return phoneNumber;
     }
 
+    @Deprecated
     public void setPhoneNumber(PhoneNumber phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -75,6 +78,7 @@ public class User {
         return emailAddress;
     }
 
+    @Deprecated
     public void setEmailAddress(EmailAddress emailAddress) {
         this.emailAddress = emailAddress;
     }
@@ -84,6 +88,7 @@ public class User {
         return teamRole;
     }
 
+    @Deprecated
     public void setTeamRole(TeamRole teamRole) {
         this.teamRole = teamRole;
     }
@@ -168,6 +173,33 @@ public class User {
 
     private String getEmail() {
         return emailAddress.getEmailAddress();
+    }
+
+    public void update(final UserDto userDto) {
+        if (userDto.getLogin() != null) {
+            this.login = userDto.getLogin();
+        }
+
+        if (userDto.getPassword() != null) {
+            this.password = userDto.getPassword();
+        }
+
+        if (userDto.getPhoneNumber() != null) {
+            PhoneNumber phoneNumber = new PhoneNumber();
+            phoneNumber.setPrefix(userDto.getPhonePrefix());
+            phoneNumber.setNumber(userDto.getPhoneNumber());
+            this.phoneNumber = phoneNumber;
+        }
+
+        if (userDto.getEmailAddress() != null) {
+            EmailAddress emailAddress = new EmailAddress();
+            emailAddress.setEmailAddress(userDto.getEmailAddress());
+            this.emailAddress = emailAddress;
+        }
+
+        if (userDto.getTeamRole() != null) {
+            this.teamRole = TeamRole.valueOf(userDto.getTeamRole());
+        }
     }
 
     @Override

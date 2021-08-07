@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.exception.UserNotFoundException;
-import com.smalaca.taskamanager.model.embedded.*;
+import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.repository.UserRepository;
@@ -78,31 +78,8 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (userDto.getLogin() != null) {
-            user.setLogin(userDto.getLogin());
-        }
+        user.update(userDto);
 
-        if (userDto.getPassword() != null) {
-            user.setPassword(userDto.getPassword());
-        }
-
-        if (userDto.getPhoneNumber() != null) {
-            PhoneNumber phoneNumber = new PhoneNumber();
-            phoneNumber.setPrefix(userDto.getPhonePrefix());
-            phoneNumber.setNumber(userDto.getPhoneNumber());
-            user.setPhoneNumber(phoneNumber);
-        }
-
-        if (userDto.getEmailAddress() != null) {
-            EmailAddress emailAddress = new EmailAddress();
-            emailAddress.setEmailAddress(userDto.getEmailAddress());
-            user.setEmailAddress(emailAddress);
-        }
-
-        if (userDto.getTeamRole() != null) {
-            user.setTeamRole(TeamRole.valueOf(userDto.getTeamRole()));
-        }
-        
         User updated = userRepository.save(user);
 
         return new ResponseEntity<>(updated.toDto(), HttpStatus.OK);
