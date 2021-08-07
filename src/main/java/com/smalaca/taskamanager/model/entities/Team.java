@@ -93,18 +93,12 @@ public class Team {
     }
 
     public TeamDto toDto() {
-        TeamDto dto = new TeamDto();
-        dto.setId(id);
-        dto.setName(name);
+        var builder = TeamDto.builder().id(id).name(name).description(description).userIds(getMembersIds());
 
         if (hasCodename()) {
-            dto.setCodenameShort(getShortNameOfCodeName());
-            dto.setCodenameFull(getFullNameOfCodeName());
+            builder.codenameShort(getShortNameOfCodeName()).codenameFull(getFullNameOfCodeName());
         }
-
-        dto.setDescription(description);
-        dto.setUserIds(getMembersIds());
-        return dto;
+        return builder.build();
     }
 
     private boolean hasCodename() {
