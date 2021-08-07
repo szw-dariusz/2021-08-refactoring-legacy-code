@@ -87,6 +87,10 @@ public class Team {
         this.project = project;
     }
 
+    public boolean hasCodename() {
+        return codename != null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
