@@ -77,26 +77,7 @@ public class UserController {
 
         if (found.isPresent()) {
             User user = found.get();
-
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setFirstName(user.getFirstName());
-            userDto.setLastName(user.getLastName());
-            userDto.setLogin(user.getLogin());
-            userDto.setPassword(user.getPassword());
-
-            if (user.hasTeamRole()) {
-                userDto.setTeamRole(user.getTeamRoleName());
-            }
-
-            if (user.hasPhoneNumber()) {
-                userDto.setPhonePrefix(user.getPrefixOfPhone());
-                userDto.setPhoneNumber(user.getNumberOfPhone());
-            }
-
-            if (user.hasEmailAddress()) {
-                userDto.setEmailAddress(user.getEmail());
-            }
+            UserDto userDto = user.asUserDto();
 
             return new ResponseEntity<>(userDto, HttpStatus.OK);
         } else  {
