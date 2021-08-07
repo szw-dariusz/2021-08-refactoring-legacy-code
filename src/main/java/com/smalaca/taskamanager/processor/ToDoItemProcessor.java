@@ -2,7 +2,6 @@ package com.smalaca.taskamanager.processor;
 
 import com.google.common.collect.ImmutableMap;
 import com.smalaca.taskamanager.events.EpicReadyToPrioritize;
-import com.smalaca.taskamanager.events.StoryDoneEvent;
 import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Story;
@@ -38,6 +37,7 @@ public class ToDoItemProcessor {
         this.communicationService = communicationService;
         this.sprintBacklogService = sprintBacklogService;
         states = ImmutableMap.of(
+                DONE, new DoneToDoItem(storyService, eventsRegistry),
                 APPROVED, new ApprovedToDoItem(eventsRegistry, storyService),
                 RELEASED, new ReleasedToDoItem(eventsRegistry),
                 TO_BE_DEFINED, new ToBeDefinedToDoItem()
@@ -53,10 +53,6 @@ public class ToDoItemProcessor {
 
             case IN_PROGRESS:
                 processInProgress(toDoItem);
-                break;
-
-            case DONE:
-                processDone(toDoItem);
                 break;
 
             default:
@@ -97,24 +93,6 @@ public class ToDoItemProcessor {
         if (toDoItem instanceof Task) {
             Task task = (Task) toDoItem;
             storyService.updateProgressOf(task.getStory(), task);
-        }
-    }
-
-    private void processDone(ToDoItem toDoItem) {
-        if (toDoItem instanceof Task) {
-            Task task = (Task) toDoItem;
-            Story story = task.getStory();
-            storyService.updateProgressOf(task.getStory(), task);
-            if (DONE.equals(story.getStatus())) {
-                StoryDoneEvent event = new StoryDoneEvent();
-                event.setStoryId(story.getId());
-                eventsRegistry.publish(event);
-            }
-        } else if (toDoItem instanceof Story) {
-            Story story = (Story) toDoItem;
-            StoryDoneEvent event = new StoryDoneEvent();
-            event.setStoryId(story.getId());
-            eventsRegistry.publish(event);
         }
     }
 }
